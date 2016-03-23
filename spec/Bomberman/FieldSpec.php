@@ -2,6 +2,7 @@
 
 namespace spec\Bomberman;
 
+use Bomberman\FieldCell;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Bomberman\Field;
@@ -68,5 +69,23 @@ class FieldSpec extends ObjectBehavior
         $this->getObjectAt(0, 0)->shouldBeNull();
         $this->getObjectAt(1, 0)->shouldBe($fieldObject);
         $this->getObjectAt(1, 1)->shouldBeNull();
+    }
+
+    function it_should_return_cells(
+        FieldObject $fieldObject,
+        FieldCellInitializationAlgorithmInterface $fieldCellInitializationAlgorithm
+    )
+    {
+        $fieldCellInitializationAlgorithm->initialize(0, 0)->willReturn(null)->shouldBeCalled();
+        $fieldCellInitializationAlgorithm->initialize(0, 1)->willReturn(null)->shouldBeCalled();
+        $fieldCellInitializationAlgorithm->initialize(1, 0)->willReturn($fieldObject)->shouldBeCalled();
+        $fieldCellInitializationAlgorithm->initialize(1, 1)->willReturn(null)->shouldBeCalled();
+
+        $this->beConstructedWith($fieldCellInitializationAlgorithm, 2, 2);
+
+        $this->getCells()->shouldBeLike([
+            [new FieldCell($this->getWrappedObject(), 0, 0), new FieldCell($this->getWrappedObject(), 0, 1)],
+            [new FieldCell($this->getWrappedObject(), 1, 0, $fieldObject->getWrappedObject()), new FieldCell($this->getWrappedObject(), 1, 1)]
+        ]);
     }
 }

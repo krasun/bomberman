@@ -98,7 +98,9 @@ class Field
         return $this->rowCount;
     }
 
-    /** @deprecated */
+    /**
+     * @return array
+     */
     public function getCells()
     {
         return $this->cells;
