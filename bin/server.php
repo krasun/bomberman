@@ -29,15 +29,15 @@ $field = new \Bomberman\Field(
     new \Bomberman\FieldCellInitializationAlgorithm\ChainInitializationAlgorithm(
         array_merge(
             [
-                new \Bomberman\FieldCellInitializationAlgorithm\PlayerInitializationAlgorithm(
-                    $playerStartPosition->getRowIndex(),
-                    $playerStartPosition->getColumnIndex(),
-                    new \Bomberman\FieldObject\Player()
-                ),
                 new \Bomberman\FieldCellInitializationAlgorithm\FireproofBlockInitializationAlgorithm(),
                 new \Bomberman\FieldCellInitializationAlgorithm\FlammableBlockInitializationAlgorithm(
                     array_merge([$playerStartPosition], $botPositions),
                     $restrictedRadius
+                ),
+                new \Bomberman\FieldCellInitializationAlgorithm\PlayerInitializationAlgorithm(
+                    $playerStartPosition->getRowIndex(),
+                    $playerStartPosition->getColumnIndex(),
+                    new \Bomberman\FieldObject\Player()
                 ),
             ],
             $botInitializationAlgorithms
