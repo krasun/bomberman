@@ -7,7 +7,7 @@ use Bomberman\FieldObject\FieldObject;
 /**
  * Represents game field with different field objects.
  */
-class Field
+class Field implements \JsonSerializable
 {
     /**
      * Row count in classical game implementation.
@@ -79,7 +79,10 @@ class Field
             throw new \InvalidArgumentException('Column index is out of range');
         }
 
-        return $this->cells[$rowIndex][$columnIndex]->getFieldObject();
+        /** @var FieldCell $fieldCell */
+        $fieldCell = $this->cells[$rowIndex][$columnIndex];
+
+        return $fieldCell->getFieldObject();
     }
 
     /**
@@ -104,5 +107,13 @@ class Field
     public function getCells()
     {
         return $this->cells;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return json_encode($this->cells);
     }
 }

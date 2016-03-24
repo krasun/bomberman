@@ -7,7 +7,7 @@ use Bomberman\FieldObject\FieldObject;
 /**
  * Represents field cell with field object.
  */
-class FieldCell
+class FieldCell implements \JsonSerializable
 {
     /**
      * @var Field
@@ -89,5 +89,17 @@ class FieldCell
     public function isEmpty()
     {
         return (null == $this->getFieldObject());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'rowIndex' => $this->getRowIndex(),
+            'columnIndex' => $this->getColumnIndex(),
+            'fieldObject' => json_encode($this->getFieldObject())
+        ];
     }
 }

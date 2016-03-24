@@ -3,7 +3,8 @@
     "type": "project",
     "require": {
         "cboden/ratchet": "0.3.*",
-        "phpspec/phpspec": "~2.5"
+        "phpspec/phpspec": "~2.5",
+        "league/tactician": "~1.0"
     },
     "autoload": {
         "psr-0": {
