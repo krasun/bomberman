@@ -2,16 +2,69 @@
 <html>
     <head>
         <title>Bomberman</title>
+        <style type="text/css">
+            .field, .field * {
+                margin: 0;
+                padding: 0;
+            }
+            .field-cell {
+                border: 1px solid #ccc;
+                width: 50px;
+                height: 50px;
+                display: inline-block;
+            }
+            .field-row {
+                width: 100%;
+                height: 50px;
+            }
+
+            .field-cell.Player {
+                background-color: green;
+            }
+            .field-cell.FlammableBlock {
+                background-color: saddlebrown;
+            }
+            .field-cell.FireproofBlock {
+                background-color: gray;
+            }
+            .field-cell.Empty {
+                background-color: lightgray;
+            }
+            .field-cell.Bot {
+                background-color: blue;
+            }
+        </style>
     </head>
     <body>
-        <div id="field">
-
-        </div>
+        <div id="field-container"></div>
         <script src="scripts/json2.js"></script>
         <script>
             window.onload = function () {
-                function renderField(fieldElement, field) {
+                function renderFieldCell(fieldCell) {
+                    var fieldCellElement = document.createElement('div');
+                    fieldCellElement.setAttribute('data-row-index',fieldCell.rowIndex);
+                    fieldCellElement.setAttribute('data-column-index', fieldCell.columnIndex);
+                    fieldCellElement.className += 'field-cell ' + (fieldCell.fieldObject ? fieldCell.fieldObject.className : 'Empty')
 
+                    return fieldCellElement;
+                }
+
+                function renderField(field) {
+                    var fieldElement = document.createElement('div');
+                    fieldElement.className += 'field';
+
+                    for (var rowIndex = 0; rowIndex < field.cells.length; rowIndex++) {
+                        var fieldRow = document.createElement('div');
+                        fieldRow.className += 'field-row';
+
+                        for (var columnIndex = 0; columnIndex < field.cells[rowIndex].length; columnIndex++) {
+                            fieldRow.appendChild(renderFieldCell(field.cells[rowIndex][columnIndex]))
+                        }
+
+                        fieldElement.appendChild(fieldRow);
+                    }
+
+                    return fieldElement;
                 }
 
                 var connection = new WebSocket('ws://localhost:8080');
@@ -20,8 +73,7 @@
                     console.log("Connection established!");
 
                     var command = {
-                        'name': 'initializeField',
-                        'data': {}
+                        'name': 'initializeField'
                     };
                     connection.send(JSON.stringify(command));
                 };
@@ -31,6 +83,7 @@
 
                     var message = JSON.parse(e.data);
 
+                    document.getElementById('field-container').appendChild(renderField(message));
                     console.log(message);
                 };
             };

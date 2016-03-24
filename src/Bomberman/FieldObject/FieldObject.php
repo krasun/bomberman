@@ -13,7 +13,7 @@ abstract class FieldObject implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'type' => (new \ReflectionClass($this))->getShortName(),
+            'className' => (new \ReflectionClass($this))->getShortName(),
         ];
     }
 }

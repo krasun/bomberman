@@ -114,6 +114,8 @@ class Field implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        return json_encode($this->cells);
+        return [
+            'cells' => $this->cells,
+        ];
     }
 }

@@ -99,7 +99,7 @@ class FieldCell implements \JsonSerializable
         return [
             'rowIndex' => $this->getRowIndex(),
             'columnIndex' => $this->getColumnIndex(),
-            'fieldObject' => json_encode($this->getFieldObject())
+            'fieldObject' => $this->getFieldObject()
         ];
     }
 }
