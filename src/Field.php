@@ -3,7 +3,6 @@
 namespace Bomberman;
 
 use Bomberman\FieldObject\AbstractFieldObject;
-use Bomberman\FieldObject\Player;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -100,7 +99,7 @@ class Field implements \JsonSerializable
      */
     public function getObjectAt($rowIndex, $columnIndex)
     {
-        return $this->getCell(new FieldPosition($rowIndex, $columnIndex));
+        return $this->getCell(new FieldPosition($rowIndex, $columnIndex))->getFieldObject();
     }
 
     /**
