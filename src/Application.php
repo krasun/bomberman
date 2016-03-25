@@ -60,8 +60,6 @@ class Application implements MessageComponentInterface
                 }
             }
 
-            var_dump($command);
-
             $field = $this->commandBus->handle($command);
 
             if ($field) {
