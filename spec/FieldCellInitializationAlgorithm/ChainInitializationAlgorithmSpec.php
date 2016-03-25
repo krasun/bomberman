@@ -3,7 +3,7 @@
 namespace spec\Bomberman\FieldCellInitializationAlgorithm;
 
 use Bomberman\FieldCellInitializationAlgorithmInterface;
-use Bomberman\FieldObject\FieldObject;
+use Bomberman\FieldObject\AbstractFieldObject;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Bomberman\FieldCellInitializationAlgorithm\ChainInitializationAlgorithm;
@@ -19,7 +19,7 @@ class ChainInitializationAlgorithmSpec extends ObjectBehavior
         FieldCellInitializationAlgorithmInterface $algorithmWithSkippedInitialization1,
         FieldCellInitializationAlgorithmInterface $algorithmWithInitialization2,
         FieldCellInitializationAlgorithmInterface $algorithmWithSkippedInitialization3,
-        FieldObject $fieldObject
+        AbstractFieldObject $fieldObject
     )
     {
         $algorithmWithSkippedInitialization1->initialize(1, 1)->willReturn(null);

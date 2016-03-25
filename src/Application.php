@@ -2,7 +2,10 @@
 
 namespace Bomberman;
 
+use Bomberman\Command\InitializeFieldCommand;
+use Bomberman\FieldRepository\FieldRepository;
 use League\Tactician\CommandBus;
+use Ramsey\Uuid\Uuid;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
@@ -51,17 +54,23 @@ class Application implements MessageComponentInterface
             $commandClass = 'Bomberman\\Command\\'.ucfirst($commandData->name).'Command';
 
             $command = new $commandClass();
-            if (isset($command->data)) {
+            if (isset($commandData->data)) {
                 foreach ($commandData->data as $key => $value) {
                     $command->$key = $value;
                 }
             }
 
-            // @todo validation/checks etc.
+            var_dump($command);
 
-            $result = $this->commandBus->handle($command);
+            $field = $this->commandBus->handle($command);
 
-            $connection->send(json_encode($result));
+            if ($field) {
+                $this->clients[$connection] = $field;
+             } else {
+                $field = $this->clients[$connection];
+            }
+
+            $connection->send(json_encode($field));
         } catch (\Exception $e) {
             var_dump($e->getMessage());
         }

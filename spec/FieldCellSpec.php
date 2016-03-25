@@ -6,7 +6,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Bomberman\Field;
 use Bomberman\FieldCell;
-use Bomberman\FieldObject\FieldObject;
+use Bomberman\FieldObject\AbstractFieldObject;
 
 class FieldCellSpec extends ObjectBehavior
 {
@@ -15,7 +15,7 @@ class FieldCellSpec extends ObjectBehavior
         $this->beAnInstanceOf(FieldCell::class);
     }
 
-    function it_should_be_correctly_constructed(FieldObject $fieldObject)
+    function it_should_be_correctly_constructed(AbstractFieldObject $fieldObject)
     {
         $field = new Field();
 

@@ -3,12 +3,16 @@
     "type": "project",
     "require": {
         "cboden/ratchet": "0.3.*",
-        "phpspec/phpspec": "~2.5",
-        "league/tactician": "~1.0"
+        "league/tactician": "~1.0",
+        "doctrine/cache": "~1.6",
+        "ramsey/uuid": "~3.3"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.5"
     },
     "autoload": {
-        "psr-0": {
-            "": "src/"
+        "psr-4": {
+            "Bomberman\\": "src/"
         }
     }
 }

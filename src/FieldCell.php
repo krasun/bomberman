@@ -2,7 +2,7 @@
 
 namespace Bomberman;
 
-use Bomberman\FieldObject\FieldObject;
+use Bomberman\FieldObject\AbstractFieldObject;
 
 /**
  * Represents field cell with field object.
@@ -25,7 +25,7 @@ class FieldCell implements \JsonSerializable
     private $columnIndex;
 
     /**
-     * @var FieldObject|null
+     * @var AbstractFieldObject|null
      */
     private $fieldObject;
 
@@ -33,9 +33,9 @@ class FieldCell implements \JsonSerializable
      * @param Field $field
      * @param int $rowIndex
      * @param int $columnIndex
-     * @param FieldObject|null $fieldObject
+     * @param AbstractFieldObject|null $fieldObject
      */
-    public function __construct(Field $field, $rowIndex, $columnIndex, FieldObject $fieldObject = null)
+    public function __construct(Field $field, $rowIndex, $columnIndex, AbstractFieldObject $fieldObject = null)
     {
         if ($rowIndex < 0 || $rowIndex >= $field->getRowCount()) {
             throw new \InvalidArgumentException('Row index is out of range');
@@ -76,7 +76,7 @@ class FieldCell implements \JsonSerializable
     }
 
     /**
-     * @return FieldObject
+     * @return AbstractFieldObject
      */
     public function getFieldObject()
     {

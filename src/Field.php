@@ -2,7 +2,10 @@
 
 namespace Bomberman;
 
-use Bomberman\FieldObject\FieldObject;
+use Bomberman\FieldObject\AbstractFieldObject;
+use Bomberman\FieldObject\Bot;
+use Bomberman\FieldObject\Player;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Represents game field with different field objects.
@@ -18,6 +21,13 @@ class Field implements \JsonSerializable
      * Column count in classical game implementation.
      */
     const DEFAULT_COLUMN_COUNT = 13;
+
+    /**
+     * Unique field identifier.
+     *
+     * @var string
+     */
+    private $id;
 
     /**
      * Two-dimensional array with field objects. Empty cell represented with null.
@@ -37,6 +47,16 @@ class Field implements \JsonSerializable
     private $columnCount = self::DEFAULT_COLUMN_COUNT;
 
     /**
+     * @var Player
+     */
+    private $player;
+
+    /**
+     * @var Bot[]
+     */
+    private $bots;
+
+    /**
      * @param FieldCellInitializationAlgorithmInterface|null $fieldCellInitializationAlgorithm
      * @param int $rowCount
      * @param int $columnCount
@@ -47,6 +67,8 @@ class Field implements \JsonSerializable
         $columnCount = self::DEFAULT_COLUMN_COUNT
     )
     {
+
+        $this->id = Uuid::uuid4();
         $this->rowCount = $rowCount;
         $this->columnCount = $columnCount;
 
@@ -60,14 +82,21 @@ class Field implements \JsonSerializable
                 $this->cells[$rowIndex][$columnIndex] = new FieldCell($this, $rowIndex, $columnIndex, $fieldObject);
             }
         }
+    }
 
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
      * @param int $rowIndex
      * @param int $columnIndex
      *
-     * @return FieldObject|null
+     * @return AbstractFieldObject|null
      */
     public function getObjectAt($rowIndex, $columnIndex)
     {
@@ -115,7 +144,8 @@ class Field implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'cells' => $this->cells,
+            'id' => $this->getId(),
+            'cells' => $this->getCells(),
         ];
     }
 }

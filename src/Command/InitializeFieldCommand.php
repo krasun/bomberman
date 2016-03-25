@@ -7,4 +7,8 @@ namespace Bomberman\Command;
  */
 class InitializeFieldCommand
 {
+    /**
+     * @var string|null
+     */
+    public $fieldId = null;
 }

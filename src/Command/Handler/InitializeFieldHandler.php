@@ -5,6 +5,7 @@ namespace Bomberman\Command\Handler;
 use Bomberman\Command\InitializeFieldCommand;
 use Bomberman\FieldFactoryInterface;
 use Bomberman\Field;
+use Bomberman\FieldRepositoryInterface;
 
 /**
  * Initializes and returns field.
@@ -17,11 +18,18 @@ class InitializeFieldHandler
     private $fieldFactory;
 
     /**
-     * @param FieldFactoryInterface $fieldFactory
+     * @var FieldRepositoryInterface
      */
-    public function __construct(FieldFactoryInterface $fieldFactory)
+    private $fieldRepository;
+
+    /**
+     * @param FieldFactoryInterface $fieldFactory
+     * @param FieldRepositoryInterface $fieldRepository
+     */
+    public function __construct(FieldFactoryInterface $fieldFactory, FieldRepositoryInterface $fieldRepository)
     {
         $this->fieldFactory = $fieldFactory;
+        $this->fieldRepository = $fieldRepository;
     }
 
     /**
@@ -31,7 +39,12 @@ class InitializeFieldHandler
      */
     public function handle(InitializeFieldCommand $command)
     {
+        if ($command->fieldId && ($field = $this->fieldRepository->find($command->fieldId))) {
+            return $field;
+        }
+
         $field = $this->fieldFactory->create();
+        $this->fieldRepository->store($field);
 
         return $field;
     }

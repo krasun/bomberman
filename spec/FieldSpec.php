@@ -7,13 +7,28 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Bomberman\Field;
 use Bomberman\FieldCellInitializationAlgorithmInterface;
-use Bomberman\FieldObject\FieldObject;
+use Bomberman\FieldObject\AbstractFieldObject;
+use Ramsey\Uuid\Uuid;
 
 class FieldSpec extends ObjectBehavior
 {
     function let()
     {
         $this->beAnInstanceOf(Field::class);
+    }
+
+    public function it_should_have_uuid_as_id()
+    {
+        $this->beConstructedWith();
+
+        $this->getId()->shouldBeUuid();
+    }
+
+    public function it_should_be_created_with_unique_id()
+    {
+        $this->beConstructedWith();
+
+        $this->getId()->shouldNotBeLike((new Field())->getId());
     }
 
     function it_should_be_constructed_by_default_with_eleven_rows_and_thirteen_columns()
@@ -54,7 +69,7 @@ class FieldSpec extends ObjectBehavior
     }
 
     function it_should_be_constructed_using_initializer(
-        FieldObject $fieldObject,
+        AbstractFieldObject $fieldObject,
         FieldCellInitializationAlgorithmInterface $fieldCellInitializationAlgorithm
     )
     {
@@ -72,7 +87,7 @@ class FieldSpec extends ObjectBehavior
     }
 
     function it_should_return_cells(
-        FieldObject $fieldObject,
+        AbstractFieldObject $fieldObject,
         FieldCellInitializationAlgorithmInterface $fieldCellInitializationAlgorithm
     )
     {
@@ -87,5 +102,14 @@ class FieldSpec extends ObjectBehavior
             [new FieldCell($this->getWrappedObject(), 0, 0), new FieldCell($this->getWrappedObject(), 0, 1)],
             [new FieldCell($this->getWrappedObject(), 1, 0, $fieldObject->getWrappedObject()), new FieldCell($this->getWrappedObject(), 1, 1)]
         ]);
+    }
+
+    public function getMatchers()
+    {
+        return [
+            'beUuid' => function ($subject) {
+                return Uuid::isValid($subject);
+            }
+        ];
     }
 }

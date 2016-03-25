@@ -1,92 +1,133 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Bomberman</title>
-        <style type="text/css">
-            .field, .field * {
-                margin: 0;
-                padding: 0;
+<head>
+    <title>Bomberman</title>
+    <style type="text/css">
+        .field, .field * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .field-cell {
+            border: 1px solid #ccc;
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+        }
+
+        .field-row {
+            width: 100%;
+            height: 50px;
+        }
+
+        .field-cell.Player {
+            background-color: green;
+        }
+
+        .field-cell.FlammableBlock {
+            background-color: saddlebrown;
+        }
+
+        .field-cell.FireproofBlock {
+            background-color: gray;
+        }
+
+        .field-cell.Empty {
+            background-color: lightgray;
+        }
+
+        .field-cell.Bot {
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+<div id="field-container"></div>
+
+<script src="scripts/vendor/json2.js"></script>
+
+<script src="scripts/app/names.js"></script>
+<script src="scripts/app/render.js"></script>
+
+<script>
+    window.onload = function () {
+        var fieldContainer = document.getElementById('field-container');
+
+        var gameState = {
+            currentAction: 'idle',
+            field: {cells: []}
+        };
+
+        var connection = new WebSocket('ws://localhost:8080');
+        connection.onopen = function (e) {
+            connection.send(JSON.stringify({'name': 'initializeField'}));
+        };
+        connection.onmessage = function (e) {
+            gameState.field = JSON.parse(e.data);
+
+            console.log(gameState.field);
+        };
+
+        document.addEventListener('keydown', function (event) {
+            switch (event.keyCode) {
+                case key.left:
+                    gameState.currentAction = action.moveLeft;
+                    break;
+                case key.up:
+                    gameState.currentAction = action.moveUp;
+                    break;
+                case key.right:
+                    gameState.currentAction = action.moveRight;
+                    break;
+                case key.down:
+                    gameState.currentAction = action.moveDown;
+                    break;
+                case key.space:
+                    gameState.currentAction = action.putBomb;
+                    break;
+                default:
+                    gameState.currentAction = action.idle;
+                    break;
             }
-            .field-cell {
-                border: 1px solid #ccc;
-                width: 50px;
-                height: 50px;
-                display: inline-block;
+
+            event.preventDefault();
+        });
+
+        document.addEventListener('keyup', function (event) {
+            gameState.currentAction = action.idle;
+
+            event.preventDefault();
+        });
+
+        function updateGameState() {
+            switch (gameState.currentAction) {
+                case action.moveLeft:
+                    connection.send(JSON.stringify({'name': 'moveLeft', 'data': {'fieldId': gameState.field.id}}));
+                    break;
+                case action.moveUp:
+                    connection.send(JSON.stringify({'name': 'moveUp', 'data': {'fieldId': gameState.field.id}}));
+                    break;
+                case action.moveRight:
+                    connection.send(JSON.stringify({'name': 'moveRight', 'data': {'fieldId': gameState.field.id}}));
+                    break;
+                case action.moveDown:
+                    console.log(gameState.field)
+
+                    connection.send(JSON.stringify({'name': 'moveDown', 'data': {'fieldId': gameState.field.id}}));
+                    break;
+                case action.putBomb:
+                    connection.send(JSON.stringify({'name': 'putBomb', 'data': {'fieldId': gameState.field.id}}));
+                    break;
             }
-            .field-row {
-                width: 100%;
-                height: 50px;
-            }
+        }
 
-            .field-cell.Player {
-                background-color: green;
-            }
-            .field-cell.FlammableBlock {
-                background-color: saddlebrown;
-            }
-            .field-cell.FireproofBlock {
-                background-color: gray;
-            }
-            .field-cell.Empty {
-                background-color: lightgray;
-            }
-            .field-cell.Bot {
-                background-color: blue;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="field-container"></div>
-        <script src="scripts/json2.js"></script>
-        <script>
-            window.onload = function () {
-                function renderFieldCell(fieldCell) {
-                    var fieldCellElement = document.createElement('div');
-                    fieldCellElement.setAttribute('data-row-index',fieldCell.rowIndex);
-                    fieldCellElement.setAttribute('data-column-index', fieldCell.columnIndex);
-                    fieldCellElement.className += 'field-cell ' + (fieldCell.fieldObject ? fieldCell.fieldObject.className : 'Empty')
-
-                    return fieldCellElement;
-                }
-
-                function renderField(field) {
-                    var fieldElement = document.createElement('div');
-                    fieldElement.className += 'field';
-
-                    for (var rowIndex = 0; rowIndex < field.cells.length; rowIndex++) {
-                        var fieldRow = document.createElement('div');
-                        fieldRow.className += 'field-row';
-
-                        for (var columnIndex = 0; columnIndex < field.cells[rowIndex].length; columnIndex++) {
-                            fieldRow.appendChild(renderFieldCell(field.cells[rowIndex][columnIndex]))
-                        }
-
-                        fieldElement.appendChild(fieldRow);
-                    }
-
-                    return fieldElement;
-                }
-
-                var connection = new WebSocket('ws://localhost:8080');
-
-                connection.onopen = function(e) {
-                    console.log("Connection established!");
-
-                    var command = {
-                        'name': 'initializeField'
-                    };
-                    connection.send(JSON.stringify(command));
-                };
-
-                connection.onmessage = function(e) {
-                    console.log('Message received!');
-
-                    var message = JSON.parse(e.data);
-
-                    document.getElementById('field-container').appendChild(renderField(message));
-                    console.log(message);
-                };
-            };
-        </script>
-    </body>
+        function gameLoop() {
+            updateGameState();
+            renderGame(fieldContainer, gameState);
+            requestAnimationFrame(gameLoop)
+        }
+        gameLoop()
+    };
+</script>
+</body>
 </html>

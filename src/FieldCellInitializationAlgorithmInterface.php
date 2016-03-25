@@ -2,7 +2,7 @@
 
 namespace Bomberman;
 
-use Bomberman\FieldObject\FieldObject;
+use Bomberman\FieldObject\AbstractFieldObject;
 
 /**
  * Responsible for field cell initialization algorithm.
@@ -13,7 +13,7 @@ interface FieldCellInitializationAlgorithmInterface
      * @param int $rowIndex
      * @param int $columnIndex
      *
-     * @return FieldObject
+     * @return AbstractFieldObject
      */
     public function initialize($rowIndex, $columnIndex);
 }

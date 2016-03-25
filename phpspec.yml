@@ -1,0 +1,6 @@
+suites:
+    default:
+        namespace: Bomberman
+        psr4_prefix: Bomberman
+        src_path: src/
+        spec_prefix: spec\
