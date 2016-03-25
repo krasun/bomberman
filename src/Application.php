@@ -70,6 +70,7 @@ class Application implements MessageComponentInterface
 
             $connection->send(json_encode($field));
         } catch (\Exception $e) {
+            var_dump('error');
             var_dump($e->getMessage());
         }
     }

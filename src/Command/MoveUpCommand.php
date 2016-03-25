@@ -7,4 +7,8 @@ namespace Bomberman\Command;
  */
 class MoveUpCommand
 {
+    /**
+     * @var string
+     */
+    public $fieldId;
 }

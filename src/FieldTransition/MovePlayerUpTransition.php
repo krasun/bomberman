@@ -8,9 +8,9 @@ use Bomberman\FieldObject\Player;
 use Bomberman\FieldTransitionInterface;
 
 /**
- * Moves player down if it is possible.
+ * Moves player up if it is possible.
  */
-class MovePlayerDownTransition implements FieldTransitionInterface
+class MovePlayerUpTransition implements FieldTransitionInterface
 {
     /**
      * {@inheritdoc}
@@ -18,7 +18,7 @@ class MovePlayerDownTransition implements FieldTransitionInterface
     public function canApplyTo(Field $field)
     {
         return $field->getCell(
-            $field->findOneCellByObjectType(Player::class)->getPosition()->toDown()
+            $field->findOneCellByObjectType(Player::class)->getPosition()->toUp()
         )->isEmpty();
     }
 
@@ -33,7 +33,7 @@ class MovePlayerDownTransition implements FieldTransitionInterface
             new MoveObjectInitializationAlgorithm(
                 $field,
                 $playerFieldCell->getPosition(),
-                $playerFieldCell->getPosition()->toDown()
+                $playerFieldCell->getPosition()->toUp()
             ),
             $field->getRowCount(),
             $field->getColumnCount()

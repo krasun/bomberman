@@ -3,6 +3,7 @@
 namespace Bomberman\Command\Handler;
 
 use Bomberman\Command\MoveDownCommand;
+use Bomberman\Field;
 use Bomberman\FieldObject\Player;
 use Bomberman\FieldRepository\FieldRepository;
 use Bomberman\FieldTransition\MovePlayerDownTransition;
@@ -27,6 +28,8 @@ class MoveDownHandler
 
     /**
      * @param MoveDownCommand $command
+     *
+     * @return Field
      */
     public function handle(MoveDownCommand $command)
     {

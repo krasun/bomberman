@@ -30,9 +30,9 @@ $commandBus = QuickStart::create([
         new DefaultFieldFactory(),
         $fieldRepository
     ),
-    MoveLeftCommand::class => new MoveLeftHandler(),
-    MoveUpCommand::class => new MoveUpHandler(),
-    MoveRightCommand::class => new MoveRightHandler(),
+    MoveLeftCommand::class => new MoveLeftHandler($fieldRepository),
+    MoveUpCommand::class => new MoveUpHandler($fieldRepository),
+    MoveRightCommand::class => new MoveRightHandler($fieldRepository),
     MoveDownCommand::class => new MoveDownHandler($fieldRepository),
     PutBombCommand::class => new PutBombHandler()
 ]);
