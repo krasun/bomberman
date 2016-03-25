@@ -3,7 +3,6 @@
 namespace Bomberman;
 
 use Bomberman\FieldObject\AbstractFieldObject;
-use Bomberman\FieldObject\Bot;
 use Bomberman\FieldObject\Player;
 use Ramsey\Uuid\Uuid;
 
@@ -37,6 +36,11 @@ class Field implements \JsonSerializable
     private $cells = [];
 
     /**
+     * @var FieldCell
+     */
+    private $cellsByObjectTypeMap = [];
+
+    /**
      * @var int
      */
     private $rowCount = self::DEFAULT_ROW_COUNT;
@@ -45,16 +49,6 @@ class Field implements \JsonSerializable
      * @var int
      */
     private $columnCount = self::DEFAULT_COLUMN_COUNT;
-
-    /**
-     * @var Player
-     */
-    private $player;
-
-    /**
-     * @var Bot[]
-     */
-    private $bots;
 
     /**
      * @param FieldCellInitializationAlgorithmInterface|null $fieldCellInitializationAlgorithm
@@ -79,7 +73,13 @@ class Field implements \JsonSerializable
                     ? $fieldCellInitializationAlgorithm->initialize($rowIndex, $columnIndex)
                     : null
                 ;
-                $this->cells[$rowIndex][$columnIndex] = new FieldCell($this, $rowIndex, $columnIndex, $fieldObject);
+
+                $fieldCell = new FieldCell($this, $rowIndex, $columnIndex, $fieldObject);
+                $this->cells[$rowIndex][$columnIndex] = $fieldCell;
+
+                if ($fieldObject) {
+                    $this->cellsByObjectTypeMap[get_class($fieldObject)][] = $fieldCell;
+                }
             }
         }
     }
@@ -100,18 +100,7 @@ class Field implements \JsonSerializable
      */
     public function getObjectAt($rowIndex, $columnIndex)
     {
-        if ($rowIndex < 0 || $rowIndex >= $this->getRowCount()) {
-            throw new \InvalidArgumentException('Row index is out of range');
-        }
-
-        if ($columnIndex < 0 || $columnIndex  >= $this->getColumnCount()) {
-            throw new \InvalidArgumentException('Column index is out of range');
-        }
-
-        /** @var FieldCell $fieldCell */
-        $fieldCell = $this->cells[$rowIndex][$columnIndex];
-
-        return $fieldCell->getFieldObject();
+        return $this->getCell(new FieldPosition($rowIndex, $columnIndex));
     }
 
     /**
@@ -139,6 +128,32 @@ class Field implements \JsonSerializable
     }
 
     /**
+     * Returns cell by specified position.
+     *
+     * @param FieldPosition $fieldPosition
+     *
+     * @return FieldCell
+     */
+    public function getCell(FieldPosition $fieldPosition)
+    {
+        $rowIndex = $fieldPosition->getRowIndex();
+        $columnIndex = $fieldPosition->getColumnIndex();
+
+        if ($rowIndex < 0 || $rowIndex >= $this->getRowCount()) {
+            throw new \InvalidArgumentException('Row index is out of range');
+        }
+
+        if ($columnIndex < 0 || $columnIndex  >= $this->getColumnCount()) {
+            throw new \InvalidArgumentException('Column index is out of range');
+        }
+
+        /** @var FieldCell $fieldCell */
+        $fieldCell = $this->cells[$rowIndex][$columnIndex];
+
+        return $fieldCell;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function jsonSerialize()
@@ -147,5 +162,38 @@ class Field implements \JsonSerializable
             'id' => $this->getId(),
             'cells' => $this->getCells(),
         ];
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return FieldCell|null
+     */
+    public function findOneCellByObjectType($className)
+    {
+        if (! isset($this->cellsByObjectTypeMap[$className])) {
+            return null;
+        }
+
+        return $this->cellsByObjectTypeMap[$className][0];
+    }
+
+    /**
+     * @param FieldTransitionInterface $transition
+     *
+     * @return Field
+     */
+    public function apply(FieldTransitionInterface $transition)
+    {
+        if (! $transition->canApplyTo($this)) {
+            return $this;
+        }
+
+        $field = $transition->apply($this);
+
+        // @dirty hack
+        $field->id = $this->id;
+
+        return $field;
     }
 }

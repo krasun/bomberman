@@ -44,6 +44,38 @@ class FieldPosition
     }
 
     /**
+     * @return FieldPosition
+     */
+    public function toUp()
+    {
+        return new FieldPosition($this->getRowIndex() - 1, $this->getColumnIndex());
+    }
+
+    /**
+     * @return FieldPosition
+     */
+    public function toDown()
+    {
+        return new FieldPosition($this->getRowIndex() + 1, $this->getColumnIndex());
+    }
+
+    /**
+     * @return FieldPosition
+     */
+    public function toLeft()
+    {
+        return new FieldPosition($this->getRowIndex(), $this->getColumnIndex() - 1);
+    }
+
+    /**
+     * @return FieldPosition
+     */
+    public function toRight()
+    {
+        return new FieldPosition($this->getRowIndex(), $this->getColumnIndex() + 1);
+    }
+
+    /**
      * @param FieldPosition $another
      *
      * @return bool

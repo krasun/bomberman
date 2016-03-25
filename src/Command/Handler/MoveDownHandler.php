@@ -5,6 +5,7 @@ namespace Bomberman\Command\Handler;
 use Bomberman\Command\MoveDownCommand;
 use Bomberman\FieldObject\Player;
 use Bomberman\FieldRepository\FieldRepository;
+use Bomberman\FieldTransition\MovePlayerDownTransition;
 
 /**
  * Responsible for moving player down.
@@ -31,8 +32,10 @@ class MoveDownHandler
     {
         $field = $this->fieldRepository->find($command->fieldId);
 
-        $field->findCellWithObjectOfType(Player::class);
+        $field = $field->apply(new MovePlayerDownTransition());
 
         $this->fieldRepository->store($field);
+
+        return $field;
     }
 }

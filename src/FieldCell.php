@@ -92,6 +92,14 @@ class FieldCell implements \JsonSerializable
     }
 
     /**
+     * @return FieldPosition
+     */
+    public function getPosition()
+    {
+        return new FieldPosition($this->getRowIndex(), $this->getColumnIndex());
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function jsonSerialize()
