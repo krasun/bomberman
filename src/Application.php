@@ -61,17 +61,25 @@ class Application implements MessageComponentInterface
             }
 
             $field = $this->commandBus->handle($command);
-
             if ($field) {
                 $this->clients[$connection] = $field;
-             } else {
-                $field = $this->clients[$connection];
             }
-
-            $connection->send(json_encode($field));
         } catch (\Exception $e) {
             var_dump('error');
             var_dump($e->getMessage());
+        }
+    }
+
+    /**
+     * Main application loop.
+     */
+    public function tick()
+    {
+        foreach ($this->clients as $connection) {
+            $field = $this->clients[$connection];
+            if ($field) {
+                $connection->send(json_encode($field));
+            }
         }
     }
 

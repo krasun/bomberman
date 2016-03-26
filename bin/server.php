@@ -20,6 +20,8 @@ use League\Tactician\Setup\QuickStart;
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
+use React\EventLoop\Factory;
+use React\Socket\Server;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -34,16 +36,27 @@ $commandBus = QuickStart::create([
     MoveUpCommand::class => new MoveUpHandler($fieldRepository),
     MoveRightCommand::class => new MoveRightHandler($fieldRepository),
     MoveDownCommand::class => new MoveDownHandler($fieldRepository),
-    PutBombCommand::class => new PutBombHandler()
+    PutBombCommand::class => new PutBombHandler($fieldRepository),
 ]);
+$application = new Application($commandBus);
 
-$server = IoServer::factory(
+
+$loop = Factory::create();
+$loop->addPeriodicTimer(0.25, function () use ($application) {
+    $application->tick();
+});
+
+$socket = new Server($loop);
+$socket->listen(8080, '127.0.0.1');
+
+$server = new IoServer(
     new HttpServer(
         new WsServer(
-            new Application($commandBus)
+            $application
         )
     ),
-    8080
+    $socket,
+    $loop
 );
 
 $server->run();

@@ -7,4 +7,8 @@ namespace Bomberman\Command;
  */
 class PutBombCommand
 {
+    /**
+     * @var string
+     */
+    public $fieldId;
 }

@@ -17,9 +17,13 @@ class MovePlayerLeftTransition implements FieldTransitionInterface
      */
     public function canApplyTo(Field $field)
     {
-        return $field->getCell(
-            $field->findOneCellByObjectType(Player::class)->getPosition()->toLeft()
-        )->isEmpty();
+        try {
+            return $field->getCell(
+                $field->findOneCellByObjectType(Player::class)->getPosition()->toLeft()
+            )->isEmpty();
+        } catch (\InvalidArgumentException $e) {
+            return false;
+        }
     }
 
     /**
