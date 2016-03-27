@@ -40,9 +40,8 @@ $commandBus = QuickStart::create([
 ]);
 $application = new Application($commandBus);
 
-
 $loop = Factory::create();
-$loop->addPeriodicTimer(0.25, function () use ($application) {
+$loop->addPeriodicTimer(0.1, function () use ($application) {
     $application->tick();
 });
 

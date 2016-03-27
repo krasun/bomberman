@@ -4,32 +4,32 @@ namespace spec\Bomberman\Command\Handler;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Bomberman\Command\Handler\MoveUpHandler;
-use Bomberman\Command\MoveUpCommand;
-use Bomberman\FieldTransition\MovePlayerUpTransition;
+use Bomberman\Command\Handler\PutBombHandler;
+use Bomberman\Command\PutBombCommand;
 use Bomberman\Field;
 use Bomberman\FieldRepositoryInterface;
+use Bomberman\FieldTransition\PutBombTransition;
 
-class MoveUpHandlerSpec extends ObjectBehavior
+class PutBombHandlerSpec extends ObjectBehavior
 {
     function let(FieldRepositoryInterface $fieldRepository)
     {
-        $this->beAnInstanceOf(MoveUpHandler::class);
+        $this->beAnInstanceOf(PutBombHandler::class);
         $this->beConstructedWith($fieldRepository);
     }
 
-    function it_should_apply_move_player_to_up_transition_to_field(
+    function it_should_apply_put_bomb_transition_to_field(
         FieldRepositoryInterface $fieldRepository,
         Field $field,
         Field $transformedField
     )
     {
         $fieldRepository->find('42')->willReturn($field);
-        $field->apply(new MovePlayerUpTransition())->willReturn($transformedField);
+        $field->apply(new PutBombTransition())->willReturn($transformedField);
 
         $fieldRepository->store($transformedField)->shouldBeCalled();
 
-        $command = new MoveUpCommand();
+        $command = new PutBombCommand();
         $command->fieldId = '42';
         $this->handle($command)->shouldBeLike($transformedField);
     }

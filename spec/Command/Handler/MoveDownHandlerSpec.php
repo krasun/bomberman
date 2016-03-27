@@ -18,7 +18,7 @@ class MoveDownHandlerSpec extends ObjectBehavior
         $this->beConstructedWith($fieldRepository);
     }
 
-    function it_should_apply_move_down_player_transition_to_field(
+    function it_should_apply_move_player_to_down_transition_to_field(
         FieldRepositoryInterface $fieldRepository,
         Field $field,
         Field $transformedField
