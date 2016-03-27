@@ -1,3 +1,2 @@
 /vendor/
-/bin/
-!/bin/server.php
+/vagrant/.vagrant/
