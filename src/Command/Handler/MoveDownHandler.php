@@ -4,8 +4,7 @@ namespace Bomberman\Command\Handler;
 
 use Bomberman\Command\MoveDownCommand;
 use Bomberman\Field;
-use Bomberman\FieldObject\Player;
-use Bomberman\FieldRepository\FieldRepository;
+use Bomberman\FieldRepositoryInterface;
 use Bomberman\FieldTransition\MovePlayerDownTransition;
 
 /**
@@ -14,14 +13,14 @@ use Bomberman\FieldTransition\MovePlayerDownTransition;
 class MoveDownHandler
 {
     /**
-     * @var FieldRepository
+     * @var FieldRepositoryInterface
      */
     private $fieldRepository;
 
     /**
-     * @param FieldRepository $fieldRepository
+     * @param FieldRepositoryInterface $fieldRepository
      */
-    public function __construct(FieldRepository $fieldRepository)
+    public function __construct(FieldRepositoryInterface $fieldRepository)
     {
         $this->fieldRepository = $fieldRepository;
     }
