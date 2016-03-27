@@ -1,15 +1,9 @@
 Bomberman
 ---------
 
-todo: 
+Simple implementation of Bomberman using server for logic processing.
 
-http://10.0.0.10:8000/app.html
+Not implemented yet: 
 
-1. Draw simple field and send commands
-2. simple bots AI 
-
-Todo 
-
-add credentials 
-license
-metadata in composer 
+1. Normalize move times; 
+2. Develop AI.

@@ -46,7 +46,7 @@ $loop->addPeriodicTimer(0.1, function () use ($application) {
 });
 
 $socket = new Server($loop);
-$socket->listen(8080, '127.0.0.1');
+$socket->listen(8080, '10.0.0.10');
 
 $server = new IoServer(
     new HttpServer(

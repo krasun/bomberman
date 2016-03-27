@@ -1,5 +1,5 @@
 {
-    "name": "uawebchallenge/bomberman",
+    "name": "krasun/bomberman",
     "type": "project",
     "require": {
         "cboden/ratchet": "0.3.*",

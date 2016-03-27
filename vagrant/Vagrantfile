@@ -4,7 +4,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: "10.0.0.10"
 
   config.vm.provider :virtualbox do |v|
-     v.customize ["modifyvm", :id, "--memory", 1024]
+    v.customize ["modifyvm", :id, "--memory", 1024]
   end
 
   config.ssh.forward_agent = false
@@ -12,6 +12,21 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder "./../", "/home/vagrant/bomberman"
   config.vm.provision :shell do |shell|
-    shell.path = "bootstrap.sh"
+    shell.inline = "
+      # install and configure system libraries, php and php extensions
+      apt-get update
+      apt-get install -y php5-cli
+
+      # install composer
+      curl -sS https://getcomposer.org/installer | php
+      mv composer.phar /usr/local/bin/composer
+
+      cd /home/vagrant/bomberman
+      composer install
+
+      cd /home/vagrant/bomberman
+      nohup php bin/server.php > /dev/null 2>&1 &
+      nohup php -S 0.0.0.0:8000 -t web/ > /dev/null 2>&1 &
+    "
   end
 end
